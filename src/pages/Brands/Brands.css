@@ -53,8 +53,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .brands-empty {
@@ -149,26 +153,19 @@
 }
 
 @media (max-width: 768px) {
+  .brands-title {
+    font-size: 2rem;
+  }
   .brands-container {
     padding: 1rem;
-  }
-  
-  .brands-title {
-    font-size: 2.5rem;
-  }
-  
-  .brands-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
   .brands-title {
-    font-size: 2rem;
+    font-size: 1.3rem;
   }
-  
-  .brands-subtitle {
-    font-size: 1rem;
+  .brands-container {
+    padding: 0.5rem;
   }
 }

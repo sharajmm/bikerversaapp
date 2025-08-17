@@ -1,51 +1,35 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import "./Navbar.css";
 
-interface NavbarProps {
-  onLogoClick?: () => void;
-}
-
-const Navbar: React.FC<NavbarProps> = ({ onLogoClick }) => {
+const Navbar: React.FC = () => {
   const location = useLocation();
   const { user, logout } = useAuth();
-  const navigate = typeof useLocation === "function" ? useLocation() : null;
-  const [clickCount, setClickCount] = React.useState(0);
-  const [clickTimeout, setClickTimeout] = React.useState<NodeJS.Timeout | null>(
-    null
-  );
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+  const clickTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const isActive = (path: string) => {
-    return location.pathname === path;
-  };
+  const isActive = (path: string) => location.pathname === path;
 
-  const handleLogoClick = () => {
-    if (clickTimeout) {
-      clearTimeout(clickTimeout);
+  // Triple click/tap handler
+  const handleLogoClickOrTap = () => {
+    if (clickTimeout.current) {
+      clearTimeout(clickTimeout.current);
     }
     const newCount = clickCount + 1;
     setClickCount(newCount);
     if (newCount === 3) {
       window.location.pathname = "/admin";
       setClickCount(0);
-      setClickTimeout(null);
+      clickTimeout.current = null;
     } else {
-      const timeout = setTimeout(() => {
+      clickTimeout.current = setTimeout(() => {
         setClickCount(0);
-        setClickTimeout(null);
+        clickTimeout.current = null;
       }, 2000);
-      setClickTimeout(timeout);
     }
   };
-
-  React.useEffect(() => {
-    return () => {
-      if (clickTimeout) {
-        clearTimeout(clickTimeout);
-      }
-    };
-  }, [clickTimeout]);
 
   return (
     <nav className="navbar">
@@ -53,11 +37,19 @@ const Navbar: React.FC<NavbarProps> = ({ onLogoClick }) => {
         <span
           className="navbar-logo"
           style={{ cursor: "pointer" }}
-          onClick={handleLogoClick}
+          onClick={handleLogoClickOrTap}
+          onTouchStart={handleLogoClickOrTap}
         >
           Bike Versa
         </span>
-        <div className="navbar-menu">
+        <button
+          className="navbar-hamburger"
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-label="Toggle menu"
+        >
+          <span className="hamburger-icon"></span>
+        </button>
+        <div className={`navbar-menu${menuOpen ? " open" : ""}`}>
           <Link
             to="/"
             className={`navbar-link ${isActive("/") ? "active" : ""}`}
@@ -82,7 +74,6 @@ const Navbar: React.FC<NavbarProps> = ({ onLogoClick }) => {
           >
             Contact
           </Link>
-
           {user && (
             <>
               <Link

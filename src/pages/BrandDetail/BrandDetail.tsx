@@ -1,9 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase/config';
-import Navbar from '../../components/Navbar/Navbar';
-import './BrandDetail.css';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import { db } from "../../firebase/config";
+import Navbar from "../../components/Navbar/Navbar";
+import "./BrandDetail.css";
 
 interface Brand {
   id: string;
@@ -24,6 +31,7 @@ interface Bike {
 
 const BrandDetail: React.FC = () => {
   const { brandId } = useParams<{ brandId: string }>();
+  const navigate = useNavigate();
   const [brand, setBrand] = useState<Brand | null>(null);
   const [bikes, setBikes] = useState<Bike[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,26 +42,26 @@ const BrandDetail: React.FC = () => {
 
       try {
         // Fetch brand details
-        const brandRef = doc(db, 'brands', brandId);
+        const brandRef = doc(db, "brands", brandId);
         const brandSnap = await getDoc(brandRef);
-        
+
         if (brandSnap.exists()) {
           setBrand({ id: brandSnap.id, ...brandSnap.data() } as Brand);
         }
 
         // Fetch bikes for this brand
-        const bikesRef = collection(db, 'bikes');
-        const bikesQuery = query(bikesRef, where('brandId', '==', brandId));
+        const bikesRef = collection(db, "bikes");
+        const bikesQuery = query(bikesRef, where("brandId", "==", brandId));
         const bikesSnap = await getDocs(bikesQuery);
-        
-        const bikesData = bikesSnap.docs.map(doc => ({
+
+        const bikesData = bikesSnap.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         })) as Bike[];
-        
+
         setBikes(bikesData);
       } catch (error) {
-        console.error('Error fetching brand and bikes:', error);
+        console.error("Error fetching brand and bikes:", error);
       } finally {
         setLoading(false);
       }
@@ -89,19 +97,36 @@ const BrandDetail: React.FC = () => {
     <div className="brand-detail">
       <Navbar />
       <div className="brand-detail-container">
-        <div className="brand-detail-header">
-          <div className="brand-detail-image">
-            <img src={brand.imageUrl} alt={brand.name} />
-          </div>
-          <div className="brand-detail-info">
-            <h1 className="brand-detail-title">{brand.name}</h1>
-            <p className="brand-detail-description">{brand.description}</p>
-          </div>
-        </div>
-
+        <button
+          className="go-back-btn"
+          onClick={() => navigate(-1)}
+          style={{
+            marginBottom: "1.5rem",
+            padding: "0.7rem 1.5rem",
+            background: "none",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            fontWeight: "600",
+            cursor: "pointer",
+            fontSize: "1rem",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <span
+            style={{
+              marginRight: "8px",
+              fontSize: "1.2em",
+              lineHeight: "1",
+            }}
+          >
+            ←
+          </span>
+          Back
+        </button>
         <div className="bikes-section">
           <h2 className="bikes-title">Available Bikes</h2>
-          
           {bikes.length === 0 ? (
             <div className="bikes-empty">
               <p>No bikes available for this brand yet.</p>
@@ -111,7 +136,11 @@ const BrandDetail: React.FC = () => {
               {bikes.map((bike) => (
                 <div key={bike.id} className="bike-card">
                   <div className="bike-image-container">
-                    <img src={bike.imageUrl} alt={bike.name} className="bike-image" />
+                    <img
+                      src={bike.imageUrl}
+                      alt={bike.name}
+                      className="bike-image"
+                    />
                     <div className="bike-type">{bike.type}</div>
                   </div>
                   <div className="bike-content">

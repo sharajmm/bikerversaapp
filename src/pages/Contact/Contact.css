@@ -165,34 +165,23 @@
 }
 
 @media (max-width: 768px) {
+  .contact-title {
+    font-size: 2rem;
+  }
   .contact-container {
     padding: 1rem;
   }
-  
-  .contact-title {
-    font-size: 2.5rem;
-  }
-  
   .contact-content {
     grid-template-columns: 1fr;
     gap: 2rem;
-  }
-  
-  .contact-form {
-    padding: 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
   .contact-title {
-    font-size: 2rem;
+    font-size: 1.3rem;
   }
-  
-  .contact-subtitle {
-    font-size: 1rem;
-  }
-  
-  .contact-form {
-    padding: 1rem;
+  .contact-container {
+    padding: 0.5rem;
   }
 }

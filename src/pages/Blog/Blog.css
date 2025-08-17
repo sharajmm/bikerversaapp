@@ -53,8 +53,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .blog-empty {
@@ -133,27 +137,125 @@
   font-size: 0.95rem;
 }
 
+.blog-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.blog-modal {
+  background: #1a1a1a;
+  border-radius: 16px;
+  max-width: 600px;
+  width: 90vw;
+  padding: 2rem;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(255, 107, 53, 0.2);
+  color: white;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.blog-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #ff6b35;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.blog-modal-image-container {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.blog-modal-image {
+  width: 100%;
+  border-radius: 12px;
+  max-height: 250px;
+  object-fit: cover;
+}
+
+.blog-modal-category {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: linear-gradient(45deg, #ff6b35, #ff8e53);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.blog-modal-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  background: linear-gradient(45deg, #ff6b35, #ff8e53);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.blog-modal-description {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
 @media (max-width: 768px) {
-  .blog-container {
-    padding: 1rem;
+  .blog-header {
+    margin-bottom: 2rem;
+    padding-top: 1.5rem;
   }
-  
   .blog-title {
-    font-size: 2.5rem;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
   }
-  
-  .blog-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+  .blog-subtitle {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  .blog-card {
+    margin-bottom: 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .blog-title {
-    font-size: 2rem;
+  .blog-header {
+    margin-bottom: 1rem;
+    padding-top: 1rem;
   }
-  
+  .blog-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+  }
   .blog-subtitle {
-    font-size: 1rem;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .blog-modal {
+    padding: 1rem;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  .blog-modal-title {
+    font-size: 1.3rem;
   }
 }

@@ -31,8 +31,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .brand-detail-header {
@@ -170,40 +174,21 @@
 }
 
 @media (max-width: 768px) {
-  .brand-detail-container {
-    padding: 1rem;
-  }
-  
   .brand-detail-header {
     grid-template-columns: 1fr;
-    gap: 2rem;
-    text-align: center;
-  }
-  
-  .brand-detail-title {
-    font-size: 2.5rem;
-  }
-  
-  .bikes-title {
-    font-size: 2rem;
-  }
-  
-  .bikes-grid {
-    grid-template-columns: 1fr;
     gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .brand-detail-container {
+    padding: 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .brand-detail-title {
-    font-size: 2rem;
+  .brand-detail-header {
+    gap: 1rem;
   }
-  
-  .brand-detail-description {
-    font-size: 1rem;
-  }
-  
-  .bikes-title {
-    font-size: 1.8rem;
+  .brand-detail-container {
+    padding: 0.5rem;
   }
 }

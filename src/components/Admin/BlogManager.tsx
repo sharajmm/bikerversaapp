@@ -1,8 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, Timestamp } from 'firebase/firestore';
-import { db } from '../../firebase/config';
-import { Trash2, Edit3, Plus } from 'lucide-react';
-import './BlogManager.css';
+import React, { useState, useEffect } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  Timestamp,
+} from "firebase/firestore";
+import { db } from "../../firebase/config";
+import { Trash2, Edit3, Plus } from "lucide-react";
+import "./BlogManager.css";
 
 interface BlogPost {
   id: string;
@@ -18,10 +28,10 @@ const BlogManager: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingBlog, setEditingBlog] = useState<BlogPost | null>(null);
   const [formData, setFormData] = useState({
-    title: '',
-    imageUrl: '',
-    category: '',
-    description: ''
+    title: "",
+    imageUrl: "",
+    category: "",
+    description: "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -31,15 +41,15 @@ const BlogManager: React.FC = () => {
 
   const fetchBlogs = async () => {
     try {
-      const blogsRef = collection(db, 'blogs');
+      const blogsRef = collection(db, "blogs");
       const snapshot = await getDocs(blogsRef);
-      const blogData = snapshot.docs.map(doc => ({
+      const blogData = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       })) as BlogPost[];
       setBlogs(blogData);
     } catch (error) {
-      console.error('Error fetching blogs:', error);
+      console.error("Error fetching blogs:", error);
     }
   };
 
@@ -49,19 +59,19 @@ const BlogManager: React.FC = () => {
 
     try {
       if (editingBlog) {
-        const blogRef = doc(db, 'blogs', editingBlog.id);
+        const blogRef = doc(db, "blogs", editingBlog.id);
         await updateDoc(blogRef, formData);
       } else {
-        await addDoc(collection(db, 'blogs'), {
+        await addDoc(collection(db, "blogs"), {
           ...formData,
-          createdAt: Timestamp.now()
+          createdAt: Timestamp.now(),
         });
       }
-      
+
       resetForm();
       fetchBlogs();
     } catch (error) {
-      console.error('Error saving blog:', error);
+      console.error("Error saving blog:", error);
     } finally {
       setLoading(false);
     }
@@ -73,28 +83,28 @@ const BlogManager: React.FC = () => {
       title: blog.title,
       imageUrl: blog.imageUrl,
       category: blog.category,
-      description: blog.description
+      description: blog.description,
     });
     setShowForm(true);
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this blog post?')) {
+    if (window.confirm("Are you sure you want to delete this blog post?")) {
       try {
-        await deleteDoc(doc(db, 'blogs', id));
+        await deleteDoc(doc(db, "blogs", id));
         fetchBlogs();
       } catch (error) {
-        console.error('Error deleting blog:', error);
+        console.error("Error deleting blog:", error);
       }
     }
   };
 
   const resetForm = () => {
     setFormData({
-      title: '',
-      imageUrl: '',
-      category: '',
-      description: ''
+      title: "",
+      imageUrl: "",
+      category: "",
+      description: "",
     });
     setEditingBlog(null);
     setShowForm(false);
@@ -104,10 +114,7 @@ const BlogManager: React.FC = () => {
     <div className="blog-manager">
       <div className="manager-header">
         <h2>Blog Posts</h2>
-        <button 
-          className="add-button"
-          onClick={() => setShowForm(true)}
-        >
+        <button className="add-button" onClick={() => setShowForm(true)}>
           <Plus size={20} />
           Add New Blog
         </button>
@@ -116,52 +123,61 @@ const BlogManager: React.FC = () => {
       {showForm && (
         <div className="form-overlay">
           <div className="form-container">
-            <h3>{editingBlog ? 'Edit Blog Post' : 'Add New Blog Post'}</h3>
+            <h3>{editingBlog ? "Edit Blog Post" : "Add New Blog Post"}</h3>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label>Title</label>
                 <input
                   type="text"
                   value={formData.title}
-                  onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, title: e.target.value })
+                  }
                   required
                 />
               </div>
-              
+
               <div className="form-group">
                 <label>Image URL</label>
                 <input
                   type="url"
                   value={formData.imageUrl}
-                  onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, imageUrl: e.target.value })
+                  }
                   required
                 />
               </div>
-              
+
               <div className="form-group">
                 <label>Category</label>
                 <input
                   type="text"
                   value={formData.category}
-                  onChange={(e) => setFormData({...formData, category: e.target.value})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, category: e.target.value })
+                  }
                   required
                 />
               </div>
-              
+
               <div className="form-group">
                 <label>Description</label>
-                <textarea
+                <ReactQuill
                   value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  rows={4}
-                  required
+                  onChange={(value) =>
+                    setFormData({ ...formData, description: value })
+                  }
+                  theme="snow"
                 />
               </div>
-              
+
               <div className="form-actions">
-                <button type="button" onClick={resetForm}>Cancel</button>
+                <button type="button" onClick={resetForm}>
+                  Cancel
+                </button>
                 <button type="submit" disabled={loading}>
-                  {loading ? 'Saving...' : editingBlog ? 'Update' : 'Create'}
+                  {loading ? "Saving..." : editingBlog ? "Update" : "Create"}
                 </button>
               </div>
             </form>
@@ -176,7 +192,8 @@ const BlogManager: React.FC = () => {
             <div className="item-content">
               <div className="item-category">{blog.category}</div>
               <h4>{blog.title}</h4>
-              <p>{blog.description}</p>
+              {/* Render description as HTML for rich text support */}
+              <div dangerouslySetInnerHTML={{ __html: blog.description }} />
               <div className="item-actions">
                 <button onClick={() => handleEdit(blog)}>
                   <Edit3 size={16} />

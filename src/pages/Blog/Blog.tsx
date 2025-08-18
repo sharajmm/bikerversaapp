@@ -92,11 +92,15 @@ const Blog: React.FC = () => {
                 </div>
                 <div className="blog-content">
                   <h3 className="blog-card-title">{blog.title}</h3>
-                  <p className="blog-description">
-                    {blog.description.length > 120
-                      ? blog.description.slice(0, 120) + "..."
-                      : blog.description}
-                  </p>
+                  <div
+                    className="blog-description"
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        blog.description.length > 120
+                          ? blog.description.slice(0, 120) + "..."
+                          : blog.description,
+                    }}
+                  />
                 </div>
               </article>
             ))}
@@ -128,7 +132,9 @@ const Blog: React.FC = () => {
             <div className="blog-modal-content">
               <h2 className="blog-modal-title">{selectedBlog.title}</h2>
               <p className="blog-modal-description">
-                {selectedBlog.description}
+                <span
+                  dangerouslySetInnerHTML={{ __html: selectedBlog.description }}
+                />
               </p>
             </div>
           </div>
